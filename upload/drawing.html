@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<head>
+<title> canvas upload </title>
+</head>
+<body style="background-color:silver;">
+<!-- <h1> Base64 image Uploader</h1> -->
+<!-- <br> -->
+<!-- <p style="position:relative; margin-right:20px; font-family:Book Antiqua; color=:orange; font-size:16px;"> Upload whatever picture you want, it will return you a base64 based image. </p> -->
+<canvas style="background-color:white;" id="myCanvas"></canvas><br>
+<!-- <button class="button" id="btnUpload">Upload</button> -->
+<script>
+const btnUpload = document.getElementById("btnUpload");
+const myCanvas = document.getElementById("myCanvas");
+const ctx = myCanvas.getContext("2d");
+
+window.addEventListener("load", () => {
+
+let painting = false;
+
+myCanvas.width = window.innerWidth
+myCanvas.height = window.innerHeight
+function startPosition(e) {
+painting = true;
+draw(e);
+}
+function finishedPosition() {
+painting = false;
+ctx.beginPath();
+}
+function draw(e) {
+if (!painting) return;
+ctx.lineWidth = 2;
+ctx.lineCap = "round";
+ctx.lineTo(e.clientX, e.clientY);
+ctx.strokeStyle = "orange";
+
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(e.clientX, e.clientY);
+}
+/* function clearscreen() {
+event.preventDefault();
+ctx.clearRect(20,20,100,50);
+} */
+
+myCanvas.addEventListener("mousedown", startPosition);
+myCanvas.addEventListener("mouseup", finishedPosition);
+myCanvas.addEventListener("mousemove", draw);
+myCanvas.addEventListener("contextmenu", clearscreen);
+});
+
+/* ctx.fillstyle = "#ccc";
+ctx.fill();
+
+ctx.fillstyle = "blue";
+ctx.font = "35px serif";
+ctx.fillText("base64", 30, 60) 
+btnUpload.addEventListener("click", uploadCanvasImage); */
+
+
+
+function uploadCanvasImage() {
+const base64 = myCanvas.toDataURL();
+const body = {
+"generated_at": new Date().toISOString(),
+"png": base64
+};
+fetch("upload.php", {
+method: "post",
+body: JSON.stringify(body),
+headers: {
+"Content-Type": "application/json"
+}
+
+})};
+</script>
+<script>
+let n = "base64";
+const str = n;
+const base64 = btoa(str);
+const decoded = atob(base64);
+console.log("Origin:", str)
+console.log("Base64", base64)
+</script>
+</body>
+</html>
